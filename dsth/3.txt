@@ -1,0 +1,252 @@
+Perfect Yash! You’ve uploaded a well-structured code for **Generalized Linked List (GLL)** — a very important concept for **SPPU DSA practicals (2019 Pattern)**.
+
+---
+
+## ✅ Objective of Code:
+
+To implement a **Generalized Linked List (GLL)** to store a **Book** → **Section** → **Subsection** structure using **linked nodes**.
+
+---
+
+## 🔹 FULL COMMENTED CODE + LOGIC EXPLANATION
+
+### 🔸 Node Structure
+
+```cpp
+struct Node {
+	int flag;           // Flag = 0 means no child, 1 means has a down link (sections/subsections)
+	char title[30];     // Stores title (book/section/subsection)
+	Node* down;         // Points to next level (section/subsection)
+	Node* next;         // Points to next node at same level (sibling)
+
+	Node() {
+		flag = 0;
+		strcpy(title, "");
+		down = nullptr;
+		next = nullptr;
+	}
+
+	Node(char titl[]) {
+		flag = 0;
+		strcpy(title, titl);
+		down = nullptr;
+		next = nullptr;
+	}
+};
+```
+
+---
+
+### 🔸 GLL Class and Constructor
+
+```cpp
+class GeneralizedLinkedList {
+	private:
+		Node *root;  // root points to the Book node
+
+	public:
+		GeneralizedLinkedList(char titl[30]) {
+			root = new Node(titl);  // create book title
+		}
+```
+
+### 🔸 Get Book Title and Find Section
+
+```cpp
+	char* getTitle() {
+		return root->title;  // return book name
+	}
+
+	Node* getSection(char titl[30]) {
+		Node *temp = root->down;  // move to first section
+		while(temp != NULL) {
+			if(strcmp(temp->title, titl) == 0)
+				return temp;
+			temp = temp->next;
+		}
+		return NULL;  // section not found
+	}
+```
+
+---
+
+### 🔸 Create Node (for book/section/subsection)
+
+```cpp
+	Node* create_node(string title) {
+		char titl[30];
+		cout << "Enter " << title << " Title: ";
+		cin.getline(titl, 30);
+		Node *newnode = new Node(titl);
+		return newnode;
+	}
+```
+
+---
+
+### 🔸 Add Section or Subsection
+
+```cpp
+	void add_section(Node *section_root = NULL) {
+		string titlee;
+		if(section_root == NULL && root == NULL) {
+			cout << "Not Found";
+			return;
+		}
+
+		// section_root is book or a section
+		section_root = (section_root == NULL) ? root : section_root;
+		titlee = (section_root == root) ? "Section" : "SubSection";
+
+		Node *sect = create_node(titlee);
+
+		if(section_root->flag == 0) {
+			section_root->down = sect;  // first section or subsection
+			section_root->flag = 1;
+		}
+		else {
+			Node *temp = section_root->down;
+			while(temp->next != nullptr)
+				temp = temp->next;
+			temp->next = sect;  // attach at end
+		}
+		cout << "Successfully Added." << endl;
+	}
+```
+
+---
+
+### 🔸 Display the entire Book → Section → Subsection structure
+
+```cpp
+	void display() {
+		Node *temp = root;
+		Node *subsection;
+		Node *section;
+		cout << "\nTitle = " << temp->title <<endl;
+		section = temp->down;
+		while(section != NULL) {
+			cout << "\tSection = " << section->title << endl;
+			subsection = section->down; 
+			while(subsection != NULL) {
+				cout << "\t\tSubsection = " << subsection->title << endl;
+				subsection = subsection->next;
+			}				
+			section = section->next;
+		}	
+	}
+```
+
+---
+
+### 🔸 `main()` Menu (Create, Add, Display)
+
+```cpp
+GeneralizedLinkedList *gl[10] = {nullptr};  // store 10 books max
+int index = 0;  // track number of books
+```
+
+---
+
+## 🧠 LOGIC SUMMARY
+
+* Each book is the **root node**.
+* Each book has multiple **sections** → stored in `down` pointer.
+* Each section can have multiple **subsections** → also via `down`, siblings via `next`.
+* The **flag** indicates if a node has a child (section/subsection).
+
+---
+
+## 🎤 VIVA QUESTIONS (With Answers)
+
+### Q1. What is a Generalized Linked List (GLL)?
+
+**Ans:** A GLL is a type of linked list where each node can either store a data element or a pointer to another list (i.e., hierarchical or nested structure).
+
+---
+
+### Q2. What does the `flag` field do?
+
+**Ans:** It indicates whether a node has a `down` pointer:
+
+* `flag = 0` → no child
+* `flag = 1` → has sections/subsections
+
+---
+
+### Q3. Difference between `down` and `next` pointer?
+
+* **down**: points to child (section/subsection)
+* **next**: points to sibling (next section or subsection)
+
+---
+
+### Q4. Can a node have both `down` and `next` pointers?
+
+**Ans:** Yes. `down` leads to nested level; `next` moves on same level.
+
+---
+
+### Q5. What is the purpose of using `cin.ignore()`?
+
+**Ans:** To flush the newline character `\n` left in the input buffer after `cin`, before using `getline()`.
+
+---
+
+### Q6. Why do we use `char title[30]` instead of `string`?
+
+**Ans:** To comply with C-style string handling for compatibility with functions like `strcpy` and `strcmp`.
+
+---
+
+### Q7. How is subsection added?
+
+**Ans:** By first finding the section using `getSection()` and then calling `add_section(section_node)`.
+
+---
+
+### Q8. What if book title already exists?
+
+**Ans:** This code allows duplicate book titles, but ideally a check should be added.
+
+---
+
+### Q9. Is this recursive structure?
+
+**Ans:** No, it’s **iterative**, but GLL supports recursion conceptually.
+
+---
+
+### Q10. What is the output of the display function?
+
+**Ans:** It prints:
+
+```
+Title = <Book>
+    Section = <Section>
+        Subsection = <Subsection>
+```
+
+---
+
+## 📘 Sample Execution Summary
+
+```
+Create Book       → "Harry Potter"
+Add Section       → "Phase-1", "Phase-2"
+Add Subsection    → Under "Phase-1" → "Introduction"
+Display Structure
+```
+
+Expected Output:
+
+```
+Title = Harry Potter
+    Section = Phase-1
+        Subsection = Introduction
+    Section = Phase-2
+```
+
+---
+
+Let me know if you're ready with the **next code**, and I’ll continue with full documentation, logic, viva, and comments like this.

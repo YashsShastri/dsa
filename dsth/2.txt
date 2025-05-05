@@ -1,0 +1,212 @@
+Let’s break down your **SetADT assignment** completely:
+
+---
+
+## 🔹 What is `self` in Python?
+
+In Python, `self` refers to the **instance of the class**. It is used to **access variables and methods** inside the class.
+
+For example:
+
+```python
+self.data = []  # Refers to the 'data' list specific to this SetADT object
+```
+
+---
+
+## 🔹 Full Explained & Commented Code:
+
+```python
+# Define a class to implement Set Abstract Data Type (ADT)
+class SetADT:
+    def __init__(self):
+        # Constructor initializes an empty list to store set elements
+        self.data = []
+
+    def contains(self, value):
+        # Check if the set contains a specific value
+        return value in self.data
+
+    def insert(self, value):
+        # Insert value only if not already present (set has unique values)
+        if not self.contains(value):
+            self.data.append(value)
+            return True
+        return False
+
+    def remove(self, value):
+        # Remove the value if it exists in the set
+        if self.contains(value):
+            self.data.remove(value)
+            return True
+        return False
+
+    def get_size(self):
+        # Return the number of elements in the set
+        return len(self.data)
+
+    def union(self, set2):
+        # Return a new set that is the union of self and set2
+        set3 = SetADT()
+        for i in self.data:
+            set3.insert(i)
+        for i in set2.data:
+            set3.insert(i)
+        return set3
+
+    def intersection(self, set2):
+        # Return a new set with elements common to both sets
+        set3 = SetADT()
+        for i in self.data:
+            if set2.contains(i):
+                set3.insert(i)
+        return set3
+
+    def difference(self, set2):
+        # Return a new set with elements in self but not in set2
+        set3 = SetADT()
+        for i in self.data:
+            if not set2.contains(i):
+                set3.insert(i)
+        return set3
+
+    def subset(self, set2):
+        # Check if set2 is a subset of self
+        return all(self.contains(i) for i in set2.data)
+
+    def display(self):
+        # Display the set elements
+        print("{" + ", ".join(map(str, self.data)) + "}")
+
+
+# Driver code to interact with the set
+s1 = SetADT()  # Create an empty set
+
+# Menu-driven interface
+while True:
+    print("\n1. Insert.")
+    print("2. Remove.")
+    print("3. Contains.")
+    print("4. Size")
+    print("5. Display.")
+    print("6. Intersection.")
+    print("7. Union.")
+    print("8. Difference.")
+    print("9. Subset.")
+    print("0. Exit.")
+    
+    ch = int(input("Enter Your Choice: "))
+    
+    if ch == 1:
+        # Insert a value
+        if s1.insert(int(input("Enter Value: "))):
+            print("Value Inserted")
+        else:
+            print("Already Present")
+    elif ch == 2:
+        # Remove a value
+        if s1.remove(int(input("Enter Value: "))):
+            print("Value Removed")
+        else:
+            print("Not Found")
+    elif ch == 3:
+        # Check if value is present
+        if s1.contains(int(input("Enter Value: "))):
+            print("Value Already Present.")
+        else:
+            print("Value Not Present.")
+    elif ch == 4:
+        # Print size of the set
+        print("Size of Set =", s1.get_size())
+    elif ch == 5:
+        # Display set elements
+        s1.display()
+    elif ch == 6:
+        # Perform intersection with a predefined set
+        s2 = SetADT()
+        for val in [1, 11, 2, 21]:
+            s2.insert(val)
+        s3 = s1.intersection(s2)
+        s3.display()
+    elif ch == 7:
+        # Perform union with a predefined set
+        s2 = SetADT()
+        for val in [1, 11, 2, 21]:
+            s2.insert(val)
+        s3 = s1.union(s2)
+        s3.display()
+    elif ch == 8:
+        # Perform difference with a predefined set
+        s2 = SetADT()
+        for val in [1, 11, 2, 21]:
+            s2.insert(val)
+        s3 = s1.difference(s2)
+        s3.display()
+    elif ch == 9:
+        # Check if s1 is a subset of s2
+        s2 = SetADT()
+        for val in [1, 2]:
+            s2.insert(val)
+        if s1.subset(s2):
+            print("s1 is a subset of s2")
+        else:
+            print("s1 is not a subset of s2")
+    elif ch == 0:
+        break
+```
+
+---
+
+## 🔹 Viva Questions with Answers:
+
+### 1. **What is ADT?**
+
+**Ans:** ADT (Abstract Data Type) is a model that defines data and the operations on the data, without specifying how the data is stored.
+
+---
+
+### 2. **Why use `self`?**
+
+**Ans:** `self` refers to the current object of the class, allowing access to attributes and methods.
+
+---
+
+### 3. **What is the difference between a set and a list?**
+
+**Ans:** A list can contain duplicate elements, while a set only stores **unique** elements.
+
+---
+
+### 4. **What is the time complexity of insert, remove, and search in this implementation?**
+
+**Ans:** All are **O(n)** in worst case since we're using a Python list. A proper set using a hash table can do it in **O(1)** on average.
+
+---
+
+### 5. **What is Union, Intersection, and Difference?**
+
+* **Union:** All unique elements from both sets.
+* **Intersection:** Elements common in both sets.
+* **Difference:** Elements in first set but **not** in the second.
+
+---
+
+### 6. **What is Subset?**
+
+**Ans:** Set A is a subset of B if all elements of A are present in B.
+
+---
+
+### 7. **Why not use Python’s built-in `set`?**
+
+**Ans:** The purpose of this assignment is to learn how sets work internally and practice implementing your own ADT.
+
+---
+
+### 8. **What will happen if we insert duplicate elements?**
+
+**Ans:** The insert method checks with `contains()`, so duplicates are not allowed.
+
+---
+
+Would you like a version using Python’s built-in `set` as a comparison for learning?

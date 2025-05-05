@@ -1,0 +1,217 @@
+Here is a **fully commented version** of your code, followed by **important viva questions** and **answers** based on it. The code is well-structured and demonstrates both **adjacency matrix** and **adjacency list** representations of a graph with **DFS** and **BFS** traversals.
+
+---
+
+### ✅ **Fully Commented Code with Explanations**
+
+```cpp
+#include <iostream>
+#include <iomanip>
+#include <stack>
+#include <string.h>
+#include <queue>
+#define SIZE 8
+
+using namespace std;
+
+// ------------------------- Graph using Adjacency Matrix -------------------------
+class Graph {
+private:
+    string cities[SIZE] = {"A", "B", "C", "D", "E", "F", "G", "H"};
+    // Hardcoded adjacency matrix representing the direct flight connections
+    int adj_mat[SIZE][SIZE] = {
+        {0,1,0,1,0,0,0,0},
+        {0,0,1,0,0,1,0,0},
+        {0,0,0,0,1,0,1,1},
+        {0,0,0,0,0,1,0,0},
+        {0,1,0,0,0,1,0,0},
+        {1,0,0,0,0,0,0,0},
+        {0,0,0,0,1,0,0,1},
+        {1,0,0,0,0,0,0,0}
+    };
+
+public:
+    // Constructor
+    Graph() {}
+
+    // Depth First Search (DFS) using stack
+    void depth_first(int index) {
+        stack<int> stck;
+        bool visited[SIZE];
+        memset(visited, false, sizeof(visited));  // Initialize all as unvisited
+
+        stck.push(index);  // Start from given index
+
+        while(!stck.empty()) {
+            int i = stck.top(); stck.pop();
+            cout << cities[i] << " ";  // Print city
+            visited[i] = true;
+
+            for(int j = 0; j < SIZE; ++j) {
+                if(adj_mat[i][j] == 1 && !visited[j]) {
+                    stck.push(j);      // Push unvisited adjacent city
+                    visited[j] = true; // Mark as visited
+                }
+            }
+        }
+    }
+
+    // Breadth First Search (BFS) using queue
+    void breadth_first(int index) {
+        queue<int> que;
+        bool visited[SIZE];
+        memset(visited, false, sizeof(visited));
+
+        que.push(index);
+
+        while(!que.empty()) {
+            index = que.front(); que.pop();
+            cout << cities[index] << " ";
+            visited[index] = true;
+
+            for(int j = 0; j < SIZE; j++) {
+                if(adj_mat[index][j] == 1 && !visited[j]) {
+                    que.push(j);
+                    visited[j] = true;
+                }
+            }
+        }
+    }
+
+    // Take input for routes (flight connectivity) from user
+    void get_routes() {
+        for(int i = 0; i < SIZE; ++i) {
+            cout << "Enter city-" << i+1 << " : ";
+            cin >> cities[i];
+        }
+
+        cout << "If no flight then '0'." << endl;
+        for(int i = 0; i < SIZE; i++) {
+            for(int j = i + 1; j < SIZE; j++) {
+                cout << cities[i] << "->" << cities[j] << " : ";
+                cin >> adj_mat[i][j];
+                adj_mat[j][i] = adj_mat[i][j];  // Make it symmetric (undirected)
+            }
+        }
+    }
+
+    // Display adjacency matrix as flight chart
+    void show_chart() {
+        cout << "\n--------------------------------------------------------\n";
+        cout << setw(10) << "|";
+        for(int i = 0; i < SIZE; ++i)
+            cout << setw(cities[i].length()+2) << cities[i] << "|";
+        cout << "\n--------------------------------------------------------";
+
+        for(int i = 0; i < SIZE; ++i) {
+            cout << "\n" << setw(9) << cities[i] << "|";
+            for(int j = 0; j < SIZE; ++j)
+                cout << setw(cities[j].length()+2) << adj_mat[i][j] << "|";
+        }
+        cout << endl;
+    }
+};
+
+// ------------------------- Graph using Adjacency List -------------------------
+struct Node {
+    string city;
+    int time;
+    Node* next = nullptr;
+
+    Node() { city = ""; }
+    Node(string cityy, int timee) { city = cityy; time = timee; }
+};
+
+class ListGraph {
+private:
+    Node* cities[SIZE];
+
+public:
+    ListGraph() {
+        for(int i = 0; i < SIZE; i++)
+            cities[i] = nullptr;
+    }
+
+    // Input routes with time as weight between cities
+    void get_routes() {
+        int timee;
+        string cityy;
+        for(int i = 0; i < SIZE; ++i) {
+            cout << "Enter city-" << i+1 << " : ";
+            cin >> cityy;
+            cities[i] = new Node(cityy, 0);
+        }
+
+        cout << "\nIf no flight then '0'." << endl;
+        for(int i = 0; i < SIZE; i++) {
+            for(int j = i + 1; j < SIZE; j++) {
+                cout << cities[i]->city << "->" << cities[j]->city << " : ";
+                cin >> timee;
+                if(timee <= 0) continue;
+
+                // Insert in both directions (undirected)
+                insert(i, new Node(cities[j]->city, timee));
+                insert(j, new Node(cities[i]->city, timee));
+            }
+        }
+    }
+
+    // Append new node to list
+    void insert(int index, Node* node) {
+        Node *temp = cities[index];
+        while(temp->next != nullptr)
+            temp = temp->next;
+        temp->next = node;
+    }
+
+    // Display adjacency list
+    void show_chart() {
+        Node *temp;
+        cout << "\n\n\n";
+        for(int i = 0; i < SIZE; i++) {
+            temp = cities[i];
+            while(temp != NULL) {
+                cout << temp->city << "->";
+                temp = temp->next;
+            }
+            cout << endl;
+        }
+    }
+};
+
+// ---------------------------- Main Function ----------------------------
+int main() {
+    // For adjacency list representation
+    // ListGraph G2;
+    // G2.get_routes();
+    // G2.show_chart();
+
+    Graph G1;
+    G1.show_chart();
+    G1.depth_first(7);  // DFS starting from H (index 7)
+    cout << endl;
+    G1.breadth_first(7); // BFS starting from H (index 7)
+    return 0;
+}
+```
+
+---
+
+### 📚 **Viva Questions and Answers**
+
+| **Question**                                           | **Answer**                                                                                                     |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| **Q1: What is an adjacency matrix?**                   | It’s a 2D array where `adj[i][j] = 1` means there's an edge from vertex `i` to `j`.                            |
+| **Q2: What is an adjacency list?**                     | It’s a list where each vertex has a linked list of all connected vertices.                                     |
+| **Q3: Which is better: adjacency matrix or list?**     | Matrix is better for dense graphs; list is more efficient for sparse graphs.                                   |
+| **Q4: What is DFS (Depth First Search)?**              | DFS explores as far as possible down one branch before backtracking. Uses stack.                               |
+| **Q5: What is BFS (Breadth First Search)?**            | BFS explores all neighbors level by level using a queue.                                                       |
+| **Q6: When do we use DFS over BFS?**                   | DFS is useful for pathfinding, topological sort. BFS is useful in finding shortest paths in unweighted graphs. |
+| **Q7: How do you avoid revisiting nodes in DFS/BFS?**  | By using a `visited[]` boolean array.                                                                          |
+| **Q8: What is the time complexity of DFS and BFS?**    | Both have time complexity O(V + E), where V = vertices, E = edges.                                             |
+| **Q9: What are real-life applications of graphs?**     | Maps, social networks, airline routes, web page linking, circuit networks.                                     |
+| **Q10: What data structures are used in DFS and BFS?** | DFS uses stack, BFS uses queue.                                                                                |
+
+---
+
+Would you like a PDF of this explanation or visual diagrams of adjacency matrix vs list?

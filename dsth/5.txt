@@ -1,0 +1,251 @@
+Here is a **commented version of the code** with **explanation of logic** and **possible viva questions**:
+
+---
+
+## ✅ **Code Logic Summary:**
+
+This C++ program implements a **Dictionary using a Binary Search Tree (BST)** where:
+
+* Each node contains a **keyword and its meaning**.
+* You can **insert**, **search**, **update**, **delete**, or **display** in **ascending** or **descending** order.
+* It also shows the **number of comparisons** made during search.
+
+---
+
+## ✅ **Key Concepts Explained in Code Comments:**
+
+```cpp
+struct Node {
+	char keyword[20];    // stores keyword
+	char meaning[40];    // stores meaning of keyword
+	Node* lchild;        // pointer to left child
+	Node* rchild;        // pointer to right child
+
+	Node() {
+		strcpy(keyword, "");
+		strcpy(meaning, "");
+		lchild = nullptr;
+		rchild = nullptr;
+	}
+
+	Node(char keyy[], char mean[]) {
+		strcpy(keyword, keyy);
+		strcpy(meaning, mean);
+		lchild = nullptr;
+		rchild = nullptr;
+	}
+};
+```
+
+---
+
+```cpp
+class BinarySearchTree {
+private:
+	Node* root;               // Root of the BST
+	stack<Node*> st;          // Stack used for non-recursive inorder traversal
+
+public:
+	BinarySearchTree() { root = NULL; }
+
+	// Insert keyword and its meaning
+	void insert(char keyy[], char mean[]) {
+		Node* newnode = new Node(keyy, mean);
+		if (root == NULL) {
+			root = newnode;
+			cout << "KeyWord Inserted." << endl;
+			return;
+		}
+		Node* temp = root;
+		while (temp != NULL) {
+			// Move left if keyword is smaller
+			if (strcmp(newnode->keyword, temp->keyword) < 0) {
+				if (temp->lchild != nullptr)
+					temp = temp->lchild;
+				else {
+					temp->lchild = newnode;
+					cout << "Value Inserted" << endl;
+					return;
+				}
+			}
+			// Move right if keyword is greater or equal
+			else {
+				if (temp->rchild != nullptr)
+					temp = temp->rchild;
+				else {
+					temp->rchild = newnode;
+					cout << "Value Inserted" << endl;
+					return;
+				}
+			}
+		}
+	}
+```
+
+---
+
+```cpp
+	// Search for keyword and print number of comparisons
+	Node* search(char keyy[]) {
+		Node* temp = root;
+		int comparisons = 0;
+
+		while (temp != NULL) {
+			if (strcmp(keyy, temp->keyword) == 0) {
+				cout << "Keyword Found." << endl;
+				cout << "Comparsons  =  " << comparisons << endl;
+				return temp;
+			}
+			if (strcmp(keyy, temp->keyword) > 0)
+				temp = temp->rchild;
+			else
+				temp = temp->lchild;
+			comparisons++;
+		}
+		cout << "Keyword Not Found" << endl;
+		return NULL;
+	}
+```
+
+---
+
+```cpp
+	// Non-recursive inorder display (ascending order)
+	void inorder() {
+		if (root == NULL) {
+			cout << "Tree is empty." << endl;
+			return;
+		}
+		Node* current = root;
+		while (current != nullptr || !st.empty()) {
+			if (current != nullptr) {
+				st.push(current);
+				current = current->lchild;
+			} else {
+				current = st.top();
+				st.pop();
+				cout << current->keyword << " : " << current->meaning << endl;
+				current = current->rchild;
+			}
+		}
+	}
+
+	// Recursive reverse inorder (descending order)
+	void display_descending(Node* root) {
+		if (root == NULL)
+			return;
+		display_descending(root->rchild);
+		cout << root->keyword << " : " << root->meaning << endl;
+		display_descending(root->lchild);
+	}
+```
+
+---
+
+```cpp
+	// Modify keyword's meaning
+	void modify(char keyy[], char new_meaning[]) {
+		Node* found = search(keyy);
+		if (found != NULL)
+			strcpy(found->meaning, new_meaning);
+		cout << "Node Updated" << endl;
+	}
+```
+
+---
+
+```cpp
+	// Delete keyword node
+	void delete_key(char keyy[]) {
+		Node* search_node = root;
+		Node* parent = NULL;
+		Node* successor = NULL;
+		Node* successor_parent;
+		bool isleft = false;
+
+		search_node = search(keyy);
+		parent = getParent(search_node, isleft);
+
+		if (search_node == NULL) {
+			cout << "No such node." << endl;
+			return;
+		}
+
+		// Case 1: Leaf node
+		if (search_node->lchild == nullptr && search_node->rchild == nullptr) {
+			if (search_node == root)
+				root = NULL;
+			else if (isleft)
+				parent->lchild = nullptr;
+			else
+				parent->rchild = nullptr;
+		}
+
+		// Case 2: Node with two children
+		else if (search_node->lchild != nullptr && search_node->rchild != nullptr) {
+			successor = getSuccessor(search_node->rchild);
+			successor_parent = getParent(successor, isleft);
+
+			strcpy(search_node->keyword, successor->keyword);
+			strcpy(search_node->meaning, successor->meaning);
+
+			if (successor_parent == search_node)
+				search_node->rchild = successor->rchild;
+			else
+				successor_parent->lchild = successor->rchild;
+
+			search_node = successor;
+		}
+
+		// Case 3: Node with only left child
+		else if (search_node->lchild != nullptr) {
+			if (search_node == root)
+				root = search_node->lchild;
+			else if (isleft)
+				parent->lchild = search_node->lchild;
+			else
+				parent->rchild = search_node->lchild;
+		}
+		// Case 4: Node with only right child
+		else {
+			if (search_node == root)
+				root = search_node->rchild;
+			else if (isleft)
+				parent->lchild = search_node->rchild;
+			else
+				parent->rchild = search_node->rchild;
+		}
+
+		delete search_node;
+		cout << "Node Deleted." << endl;
+	}
+```
+
+---
+
+## ✅ **Viva Questions & Answers**
+
+**Q1. What is a Binary Search Tree (BST)?**
+**A:** A BST is a binary tree where each node has a key, and all keys in the left subtree are smaller, all in the right subtree are greater.
+
+**Q2. What is the time complexity for searching in BST?**
+**A:** Best case: O(log n) in balanced BST, Worst case: O(n) in skewed BST.
+
+**Q3. What is inorder traversal in BST?**
+**A:** Left → Root → Right; gives sorted order (ascending).
+
+**Q4. How do you delete a node with two children in BST?**
+**A:** Replace with its inorder successor (smallest node in right subtree) or inorder predecessor (largest in left subtree).
+
+**Q5. What is the purpose of the `getSuccessor` function?**
+**A:** It finds the inorder successor of a node for replacement during deletion.
+
+**Q6. What are the applications of BST?**
+**A:** Fast searching, dictionary implementation, autocomplete, and database indexing.
+
+**Q7. How can you display data in descending order?**
+**A:** Use reverse inorder traversal: Right → Root → Left.
+
+---
+
+Let me know if you want a **graphical illustration of the BST** based on your input data or a **menu-driven version with descending display option too**.

@@ -1,0 +1,145 @@
+This code implements an **Optimal Binary Search Tree (OBST)** algorithm using dynamic programming to construct a binary search tree where the search cost is minimized. It considers both the probability of successful searches (`p[i]`) and failure probabilities (`q[i]`). Below is an explanation and commented code for each part:
+
+### Code Walkthrough and Explanation:
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class obst {
+    int a[10], r[10][10], n;              // Array a[] stores the keys, r[][] stores the root node indices, n is the number of elements.
+    float p[10], q[10], w[10][10], c[10][10]; // p[]: probabilities of successful searches, q[]: probabilities of failures, w[][]: weight matrix, c[][]: cost matrix.
+
+    public:
+        void accept();                 // Method to input the data for keys, probabilities.
+        void cons_obst();              // Method to construct the optimal BST.
+        int find_min(int, int);        // Method to find the minimum cost node.
+        void tree(int, int);           // Method to print the optimal binary search tree.
+};
+
+void obst::accept() {
+    int i;
+    cout << "\n How many elements are there in the tree? : ";
+    cin >> n;  // Input number of elements.
+    
+    cout << "\n Enter " << n << " elements :";
+    for (i = 1; i <= n; i++)
+        cin >> a[i];  // Input the elements of the tree.
+    
+    cout << "\n Enter " << n << " successful probabilities : ";
+    for (i = 1; i <= n; i++)
+        cin >> p[i];  // Input successful search probabilities.
+    
+    cout << "\n Enter " << n + 1 << " failure probabilities : ";
+    for (i = 0; i <= n; i++)
+        cin >> q[i];  // Input failure probabilities.
+}
+
+void obst::cons_obst() {
+    int i, m, j, k;
+    
+    // Initialize weight, root, and cost matrices for the base cases when j - i = 0 or j - i = 1.
+    for (i = 0; i < n; i++) {
+        w[i][i] = q[i];                // Weight for single element is just the failure probability.
+        r[i][i] = c[i][i] = 0;         // Root and cost for a single element is 0.
+        w[i][i + 1] = q[i] + q[i + 1] + p[i + 1]; // Weight for two elements.
+        r[i][i + 1] = i + 1;           // Root for two elements is the second element.
+        c[i][i + 1] = w[i][i + 1];     // Cost for two elements is the weight itself.
+    }
+    
+    w[n][n] = q[n];  // Initialize for the last element.
+    r[n][n] = c[n][n] = 0;  // Root and cost for the last element is 0.
+    
+    // Calculate the weight and cost matrices for subproblems of size 2 to n.
+    for (m = 2; m <= n; m++) {
+        for (i = 0; i <= n - m; i++) {
+            j = i + m;
+            w[i][j] = w[i][j - 1] + p[j] + q[j];  // Update the weight matrix.
+            
+            k = find_min(i, j);  // Find the root for this subproblem (optimal).
+            
+            // Calculate the total cost based on the root.
+            c[i][j] = w[i][j] + c[i][k - 1] + c[k][j]; 
+            r[i][j] = k;  // Store the root of the current subtree.
+        }
+    }
+    
+    // Output the optimal root node and recursively print the tree structure.
+    cout << "root node is " << a[r[0][n]] << endl;
+    cout << "\n Left child of " << a[r[0][n]] << " is ";
+    tree(0, r[0][n] - 1);  // Print left subtree.
+    cout << "\n Right child of " << a[r[0][n]] << " is ";
+    tree(r[0][n], n);  // Print right subtree.
+}
+
+// Function to find the minimum cost root for the subproblem.
+int obst::find_min(int i, int j) {
+    int min = 999, k, z;
+    for (k = r[i][j - 1]; k <= r[i + 1][j]; k++) {
+        cout << "\n i = " << i << " j = " << j << " k = " << k;
+        
+        // Find the root that minimizes the total cost.
+        if (min > c[i][k - 1] + c[k][j]) {
+            min = c[i][k - 1] + c[k][j];
+            z = k;
+        }
+    }
+    return (z);  // Return the index of the optimal root.
+}
+
+// Function to print the tree structure recursively.
+void obst::tree(int i, int j) {
+    if (r[i][j] == 0) {
+        cout << " NULL\n";  // If there is no node, print NULL.
+        return;
+    }
+    
+    cout << " :: " << a[r[i][j]];  // Print current root.
+    cout << "\n Left child of " << a[r[i][j]] << " is :";
+    tree(i, r[i][j] - 1);  // Recursively print left subtree.
+    cout << "\n Right child of " << a[r[i][j]] << " is : ";
+    tree(r[i][j], j);  // Recursively print right subtree.
+}
+
+int main() {
+    obst o;  // Create an instance of the OBST class.
+    o.accept();  // Accept input from the user.
+    o.cons_obst();  // Construct and print the optimal binary search tree.
+}
+```
+
+### Explanation of Key Concepts:
+
+1. **Input Handling (`accept` method)**:
+
+   * The program first asks for the number of elements in the tree (`n`).
+   * Then, it takes inputs for the tree's keys (`a[i]`), the successful search probabilities (`p[i]`), and the failure probabilities (`q[i]`).
+
+2. **Optimal Binary Search Tree Construction (`cons_obst` method)**:
+
+   * **Weight Matrix (`w[i][j]`)**: Stores the sum of probabilities for the elements between `i` and `j`, including failure probabilities.
+   * **Cost Matrix (`c[i][j]`)**: Holds the total cost of building a tree with roots chosen between `i` and `j`.
+   * **Root Matrix (`r[i][j]`)**: Stores the root index for the subtree between `i` and `j` that minimizes the search cost.
+   * Dynamic programming is used to fill these matrices. It calculates the weight, cost, and optimal root for all possible subproblems.
+
+3. **Finding Minimum Cost (`find_min` method)**:
+
+   * This function iterates over possible roots between indices `i` and `j` and finds the one that minimizes the search cost.
+
+4. **Tree Printing (`tree` method)**:
+
+   * The tree structure is recursively printed. It first prints the root, then recursively prints the left and right subtrees.
+
+### Sample Output:
+
+Assume the following inputs:
+
+* Elements: `[10, 20, 30]`
+* Probabilities: `p[] = {0.1, 0.2, 0.3}`
+* Failure Probabilities: `q[] = {0.1, 0.2, 0.3, 0.4}`
+
+The program will output the optimal root and the structure of the tree. The tree will have minimal search cost based on the probabilities.
+
+### Conclusion:
+
+This program constructs the **Optimal Binary Search Tree (OBST)** based on given probabilities using dynamic programming. It minimizes the search cost by calculating the weight and cost of subtrees and choosing optimal roots, then prints the tree structure.

@@ -1,0 +1,169 @@
+Excellent, Yash! You're fully preparing for your DSA practical and viva. Let's break this down **step by step** with full clarity for this **Hash Table-based Telephone Directory**.
+
+---
+
+## 🔍 **CODE LINE-BY-LINE COMMENTING**
+
+```python
+# Constants
+SIZE = 10  # Size of the hash table (fixed to 10 slots)
+ch = 0  # Variable to store user’s choice
+
+# Initialize hash table with None values
+databasee = [None] * SIZE  # Creating an empty list of size 10 where each slot is None initially
+
+# Hash function using modulo method
+def hash(val): return val % SIZE  # Hash function that maps phone numbers to table indices
+```
+
+---
+
+### 🚀 `insert_data(record)` Function:
+
+```python
+def insert_data(record):
+	hashed_index = hash(record[1])  # Get the hash index using phone number
+	for i in range(SIZE):
+		if databasee[hashed_index] is None:  # If slot is empty
+			databasee[hashed_index] = record  # Place the record in the slot
+			print("Record added to database.")
+			return
+		hashed_index = (hashed_index + 1) % SIZE  # Linear probing to find next free slot
+	print("Database is full.")  # If no empty slot is found after full traversal
+```
+
+---
+
+### 🔍 `search(ph_number)` Function:
+
+```python
+def search(ph_number):
+    hashed_index = hash(ph_number)  # Calculate hash
+    i = 0
+    while i < SIZE:
+        record = databasee[hashed_index]  # Get the record at index
+        if record is None:  # If empty slot found, stop
+            break
+        if record[1] == ph_number:  # If number matches
+            print("Record Found: ", databasee[hashed_index])
+            return
+        hashed_index = (hashed_index + 1) % SIZE  # Continue probing
+        i += 1
+    print("No Such Data.")  # If record not found
+```
+
+---
+
+### 📤 Display Function
+
+```python
+def display(): print(databasee)  # Just prints entire hash table
+```
+
+---
+
+## ❓ **What is `None` here?**
+
+* `None` represents **an empty slot** in the hash table.
+* It means **no data is stored yet** at that position.
+* We use `None` to **detect availability** of a slot during insertion or probing.
+
+---
+
+## 📘 THEORY + VIVA PREP
+
+### ✅ Hashing Terminology
+
+| Term           | Explanation                                          |
+| -------------- | ---------------------------------------------------- |
+| Hash Function  | Function that maps keys to indexes in a hash table   |
+| Collision      | When two keys hash to the same index                 |
+| Linear Probing | Strategy to resolve collisions by checking next slot |
+| Load Factor    | `n / SIZE`, where `n` = number of keys inserted      |
+
+---
+
+## 🧪 **Open Addressing vs Chaining**
+
+| Strategy                | Description                                                                                 |
+| ----------------------- | ------------------------------------------------------------------------------------------- |
+| **Without Replacement** | New record replaces existing if slot is occupied using linear probing (Not in this code).   |
+| **With Replacement**    | Insert record only if current slot belongs to a different hashed key (Then shift existing). |
+| **Chaining**            | Each slot contains a **linked list** to hold multiple records (used when collisions occur). |
+
+---
+
+### ⚠️ Important:
+
+* Your code uses **Linear Probing without Replacement**.
+* If slot is occupied, it moves to next slot **without replacing** the current one.
+
+---
+
+## 🔣 FORMULA USED
+
+### 1. **Hash Function:**
+
+```text
+Hash Index = key % SIZE
+```
+
+### 2. **Linear Probing:**
+
+```text
+Index = (Hash Index + i) % SIZE   for i = 0 to SIZE-1
+```
+
+---
+
+## ✅ Example (Based on Code Output):
+
+| Name  | Phone    | Hash Index (`%10`) | Final Position |
+| ----- | -------- | ------------------ | -------------- |
+| Tony  | 89274981 | 1                  | 1              |
+| Steve | 73672645 | 5                  | 5              |
+| Wanda | 89805312 | 2                  | 2              |
+
+---
+
+## 🎤 VIVA QUESTIONS (Specific to This Code)
+
+### Q1. What is the purpose of the hash function in this code?
+
+**Ans:** It converts a phone number into an index in the database to store or search a record.
+
+### Q2. How does the code handle collisions?
+
+**Ans:** By using **linear probing** — if a slot is full, it moves to the next one until an empty slot is found.
+
+### Q3. What will happen if the table is full?
+
+**Ans:** The code will print "Database is full." after checking all slots.
+
+### Q4. What is the time complexity of:
+
+* Insertion (average): **O(1)**
+* Insertion (worst): **O(n)**
+* Search: same as above
+
+### Q5. What will `display()` show if only one record added at index 1?
+
+```python
+[None, ['Tony', 89274981], None, None, None, None, None, None, None, None]
+```
+
+---
+
+## 📦 Summary Points to Tell Examiner
+
+* “I’ve implemented a hash table with linear probing.”
+* “Used modulo hashing and handle collisions using open addressing.”
+* “None means an empty slot.”
+* “Time complexity is average O(1) but may degrade to O(n) if load factor is high.”
+* “This is **without replacement**, as we don’t shift existing values.”
+
+---
+
+✅ Now go ahead and upload the **second code**, and I’ll follow the exact same detailed approach.
+
+Are you ready with the next one?

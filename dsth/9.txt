@@ -1,0 +1,220 @@
+Let's go through your code step by step and comment on the logic behind each part.
+
+### Code Breakdown:
+
+```cpp
+#include <iostream>
+using namespace std;
+```
+
+This includes the necessary library for input and output operations.
+
+### `min_heapify` Function:
+
+```cpp
+void min_heapify(int *a, int i, int n)
+{
+    int j, temp;
+    temp = a[i];
+    j = 2 * i;  // Left child of the current node
+    while (j <= n)
+    {
+        if (j < n && a[j + 1] < a[j]) // Right child exists and is smaller than left child
+            j = j + 1;  // Move to the right child
+
+        if (temp < a[j])  // If the current node is smaller than the child, the heap property is satisfied
+            break;
+
+        else if (temp >= a[j])  // Swap if the current node is greater than the child
+        {
+            a[j / 2] = a[j];  // Move the child up the heap
+            j = 2 * j;  // Move to the next level
+        }
+    }
+    a[j / 2] = temp;  // Place the original value at the correct position
+}
+```
+
+* This function maintains the min-heap property by checking each child node and ensuring that the parent node is always smaller than its children. If this condition is violated, the parent and child are swapped, and the process continues recursively down the tree until the heap property is restored.
+
+### `max_heapify` Function:
+
+```cpp
+void max_heapify(int *a, int i, int n)
+{
+    int j, temp;
+    temp = a[i];
+    j = 2 * i;  // Left child of the current node
+    while (j <= n)
+    {
+        if (j < n && a[j + 1] > a[j])  // Right child exists and is larger than left child
+            j = j + 1;  // Move to the right child
+
+        if (temp > a[j])  // If the current node is larger than the child, the heap property is satisfied
+            break;
+
+        else if (temp <= a[j])  // Swap if the current node is smaller than the child
+        {
+            a[j / 2] = a[j];  // Move the child up the heap
+            j = 2 * j;  // Move to the next level
+        }
+    }
+    a[j / 2] = temp;  // Place the original value at the correct position
+}
+```
+
+* This function ensures the max-heap property by comparing the parent node with its children. If the parent is smaller than any child, the largest child is swapped with the parent node. This continues down the tree until the max-heap property is restored.
+
+### `build_minheap` Function:
+
+```cpp
+void build_minheap(int *a, int n)
+{
+    int i;
+    for(i = n / 2; i >= 1; i--)  // Start from the last non-leaf node
+    {
+        min_heapify(a, i, n);  // Ensure each subtree satisfies the min-heap property
+    }
+}
+```
+
+* This function builds a min-heap from an unsorted array. It starts from the last non-leaf node (i.e., `n/2`), and calls `min_heapify` on each node down to the root. This guarantees that the entire array satisfies the min-heap property.
+
+### `build_maxheap` Function:
+
+```cpp
+void build_maxheap(int *a, int n)
+{
+    int i;
+    for(i = n / 2; i >= 1; i--)  // Start from the last non-leaf node
+    {
+        max_heapify(a, i, n);  // Ensure each subtree satisfies the max-heap property
+    }
+}
+```
+
+* Similar to the `build_minheap` function, this function builds a max-heap by ensuring each subtree from the last non-leaf node upwards satisfies the max-heap property.
+
+### `main` Function:
+
+```cpp
+int main()
+{
+    int n, i, x, ch;
+    char choice;
+    cout << "\nEnter number of students: ";
+    cin >> n;  // Number of students (size of the array)
+    int a[20];  // Array to store student marks
+
+    for (i = 1; i <= n; i++)  // Input marks for each student
+    {
+        cout << "Enter mark of student " << i << ": ";
+        cin >> a[i];  // Store each student's marks
+    }
+
+    do  // Menu to perform operations
+    {
+        cout << "\n1. MIN Heap\n2. MAX Heap\n3. Exit";
+        cout << "\nEnter your choice: ";
+        cin >> ch;  // Menu selection
+
+        switch (ch)
+        {
+            case 1:  // Build and display the min-heap
+                build_minheap(a, n);
+                cout << "Min Heap\n";
+                for (i = 1; i <= n; i++)
+                {
+                    cout << a[i] << endl;  // Display the min-heap array
+                }
+                break;
+
+            case 2:  // Build and display the max-heap
+                build_maxheap(a, n);
+                cout << "Max Heap\n";
+                for (i = 1; i <= n; i++)
+                {
+                    cout << a[i] << endl;  // Display the max-heap array
+                }
+                break;
+
+            case 3:  // Exit
+                break;
+        }
+    } while (ch != 3);  // Continue until the user chooses to exit
+
+    return 0;
+}
+```
+
+### Logic:
+
+1. **Heapification:**
+
+   * The `min_heapify` function ensures that for every node, the parent node is smaller than its children, adhering to the min-heap property.
+   * Similarly, the `max_heapify` function ensures the max-heap property, where the parent node is greater than its children.
+
+2. **Heap Construction:**
+
+   * The `build_minheap` and `build_maxheap` functions build the entire heap by starting from the last non-leaf node and ensuring that all subtrees follow the respective heap properties.
+
+3. **User Interaction:**
+
+   * The main function asks the user to input the number of students and their marks.
+   * Then, a menu allows the user to choose between constructing a min-heap or max-heap. The resulting heap is displayed after each operation.
+   * The process continues until the user selects the option to exit.
+
+### Example Walkthrough:
+
+1. **Input:**
+
+   ```
+   Enter number of students: 5
+   Enter mark of student 1: 75
+   Enter mark of student 2: 55
+   Enter mark of student 3: 85
+   Enter mark of student 4: 65
+   Enter mark of student 5: 45
+   ```
+
+2. **Menu:**
+
+   ```
+   1. MIN Heap
+   2. MAX Heap
+   3. Exit
+   ```
+
+3. **Choosing `1` (MIN Heap):**
+
+   * The array will be rearranged into a min-heap, where the smallest element will be at the root.
+   * Output:
+
+     ```
+     Min Heap
+     45
+     55
+     85
+     65
+     75
+     ```
+
+4. **Choosing `2` (MAX Heap):**
+
+   * The array will be rearranged into a max-heap, where the largest element will be at the root.
+   * Output:
+
+     ```
+     Max Heap
+     85
+     75
+     55
+     65
+     45
+     ```
+
+5. **Exit:**
+
+   * The program will terminate.
+
+This demonstrates how heaps are built and used, and the user can choose between a min-heap and a max-heap depending on their needs.

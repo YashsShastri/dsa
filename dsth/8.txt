@@ -1,0 +1,116 @@
+Here is the explanation of the code and logic with comments to make it easier to understand:
+
+### Code Explanation:
+
+This is a C++ program that implements a **Binary Search Tree (BST)** to store and manage a simple dictionary, where each node contains a keyword and its meaning. The program supports **Insert**, **Delete**, **Modify**, and **Display** operations. The tree is balanced using **AVL tree rotations** to maintain its height-balanced property, ensuring that operations are performed in logarithmic time.
+
+### Class `Node`:
+
+The `Node` structure is used to represent each entry in the binary search tree.
+
+* **keyword**: The word (string) which is the key for searching.
+* **meaning**: The meaning of the keyword.
+* **lchild**: Pointer to the left child node.
+* **rchild**: Pointer to the right child node.
+* **height**: The height of the node, used for balancing the tree.
+
+The `Node` class has two constructors:
+
+1. Default constructor initializes the node with empty strings and nullptr pointers.
+2. Parameterized constructor initializes the node with the keyword, meaning, and sets the height to 1.
+
+### Class `BinarySearchTree`:
+
+This class manages the BST operations and AVL tree balancing:
+
+* **root**: A pointer to the root node of the tree.
+* \**getHeight(Node*)\*\*: Returns the height of a node. If the node is `nullptr`, the height is 0.
+* \**getBalanceFactor(Node*)\*\*: Returns the balance factor (difference between left and right child heights). It helps in determining if the tree is balanced or needs rotation.
+* \**insert(Node*, char\[], char\[])\*\*: Inserts a new node into the tree. It ensures the tree remains balanced by checking the balance factor after each insertion and performing rotations as necessary (left or right rotation).
+* \**inorder(Node*)\*\*: Performs an in-order traversal of the tree and displays the nodes' keywords, meanings, and heights.
+* **modify(char\[], char\[])**: Searches for a node with a given keyword and modifies its meaning if found.
+* \**deleteNode(Node*, char\[])\*\*: Deletes a node with the specified keyword. It ensures the tree remains balanced after deletion.
+* \**rotateRight(Node*)\*\*: Right rotation to balance the tree when the left subtree is too deep.
+* \**rotateLeft(Node*)\*\*: Left rotation to balance the tree when the right subtree is too deep.
+* \**getPredecessor(Node*)\*\*: Returns the predecessor node for the deletion operation (in case the node to be deleted has two children).
+
+### Main Program Flow:
+
+* The program runs in a loop where the user can select different options:
+
+  1. **Insert Data**: Allows the user to insert a keyword and its meaning into the tree.
+  2. **Display Data**: Displays the current data (all nodes in the tree).
+  3. **Modify Data**: Allows the user to update the meaning of a keyword.
+  4. **Delete Data**: Allows the user to delete a keyword from the tree.
+  5. **Exit**: Terminates the program.
+
+### Detailed Logic:
+
+1. **Insert Data**:
+
+   * The `insert()` function inserts a new keyword into the tree, comparing it lexicographically with the existing nodes.
+   * After inserting, the height of the nodes is updated, and the balance factor is checked. If the tree becomes unbalanced (balance factor is greater than 1 or less than -1), rotations (right or left) are performed to restore balance.
+
+2. **Modify Data**:
+
+   * The `modify()` function finds the node with the specified keyword and updates its meaning.
+   * If the node is not found, it prints "Node not found".
+
+3. **Delete Data**:
+
+   * The `deleteNode()` function first finds the node to be deleted.
+   * If the node has two children, the right subtree's predecessor is used to replace the node.
+   * The tree is then rebalanced using the same rotation mechanism after the deletion.
+
+4. **Balance the Tree**:
+
+   * After every insertion and deletion, the tree checks if it is unbalanced. If it is, the tree performs a rotation (left or right) to restore balance. This ensures that the tree remains balanced for optimal performance during search, insertion, and deletion.
+
+5. **Display Data**:
+
+   * The `inorder()` function traverses the tree in in-order fashion, which visits the nodes in lexicographical order (left subtree, current node, right subtree).
+
+### Sample Output Walkthrough:
+
+1. **Insertion**:
+
+   * Let's say the user inserts the word "apple" with the meaning "A fruit".
+   * After inserting, the tree will be checked for balance. If any node becomes unbalanced, a rotation will occur to restore balance.
+
+2. **Modification**:
+
+   * If the user wants to change the meaning of the word "apple", they can input the new meaning, and the program will update it.
+
+3. **Deletion**:
+
+   * If the user decides to delete a word like "apple", the program finds the node and removes it. If necessary, the tree will rebalance itself.
+
+4. **Displaying Data**:
+
+   * After each operation, the current state of the tree is displayed using in-order traversal.
+
+### Code Example with Comments:
+
+```cpp
+// Insert Data operation
+case 1:
+    cout << "Enter Keyword : ";
+    cin.getline(keyy, 20);  // User input for keyword
+    cout << "Enter Meaning : ";
+    cin.getline(meaning, 40);  // User input for meaning
+    bst.root = bst.insert(bst.root, keyy, meaning);  // Insert into BST
+    bst.inorder(bst.root);  // Display the tree in inorder
+    break;
+
+// Modify Data operation
+case 3:
+    cout << "Enter Keyword     : ";
+    cin.getline(keyy, 20);  // Input the keyword to modify
+    cout << "Enter New Meaning : ";
+    cin.getline(new_meaning, 40);  // Input the new meaning
+    bst.modify(keyy, new_meaning);  // Modify the meaning
+    bst.inorder(bst.root);  // Display updated tree
+    break;
+```
+
+This is the flow of how the operations work step by step. The program allows the user to interact with a dictionary stored in a binary search tree while ensuring the tree remains balanced and efficient for searching and modifying data.

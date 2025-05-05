@@ -1,0 +1,237 @@
+Here's a fully **commented version** of your **Binary Search Tree (BST)** code along with brief **explanations for viva preparation** for each function as per your assignment questions.
+
+---
+
+### ✅ **Assignment Summary:**
+
+You're performing the following BST operations:
+
+1. Insert a new node
+2. Find number of nodes in longest path from root
+3. Find minimum data value in the tree
+4. Swap left and right children at every node
+5. Search for a value
+6. Display BST using inorder traversal
+
+---
+
+### ✅ **Commented Code:**
+
+```cpp
+#include <iostream>
+#include <stack>
+using namespace std;
+
+// Node structure representing each node in the BST
+struct Node {
+    int data;
+    Node* lchild;
+    Node* rchild;
+
+    Node() { // Default constructor
+        data = 0;
+        lchild = nullptr;
+        rchild = nullptr;
+    }
+
+    Node(int val) { // Parameterized constructor
+        data = val;
+        lchild = nullptr;
+        rchild = nullptr;
+    }
+};
+
+// Binary Search Tree class
+class BinarySearchTree {
+private:
+    Node* root; // Root of the BST
+    stack<Node*> st; // Used for iterative inorder traversal
+
+public:
+    BinarySearchTree() { root = NULL; }
+
+    Node* getRootNode() { return root; }
+
+    // Inserts a new node into the BST
+    void insert(int val) {
+        Node* newnode = new Node(val);
+        if (root == NULL) {
+            root = newnode;
+            cout << "Value Inserted." << endl;
+            return;
+        }
+
+        Node* temp = root;
+        while (temp != NULL) {
+            if (newnode->data < temp->data) {
+                if (temp->lchild == nullptr) {
+                    temp->lchild = newnode;
+                    break;
+                }
+                temp = temp->lchild;
+            } else {
+                if (temp->rchild == nullptr) {
+                    temp->rchild = newnode;
+                    break;
+                }
+                temp = temp->rchild;
+            }
+        }
+        cout << "Value Inserted" << endl;
+    }
+
+    // Returns the number of nodes in the longest path (i.e., height of the tree)
+    int getLongestPath(Node* parent) {
+        if (parent == NULL)
+            return 0;
+        return max(getLongestPath(parent->lchild), getLongestPath(parent->rchild)) + 1;
+    }
+
+    // Finds and returns the minimum value in the BST
+    int getmin() {
+        if (root == NULL)
+            return 0;
+        Node* temp = root;
+        while (temp->lchild != nullptr)
+            temp = temp->lchild;
+        return temp->data;
+    }
+
+    // Inorder traversal (Left, Root, Right) — gives sorted order in BST
+    void inorder() {
+        if (root == NULL) {
+            cout << "Tree is empty." << endl;
+            return;
+        }
+
+        Node* current = root;
+        while (current != nullptr || !st.empty()) {
+            if (current != nullptr) {
+                st.push(current);
+                current = current->lchild;
+            } else {
+                current = st.top();
+                st.pop();
+                cout << current->data << " ";
+                current = current->rchild;
+            }
+        }
+    }
+
+    // Searches for a specific value in the BST
+    void search(int val) {
+        Node* temp = root;
+        while (temp != NULL) {
+            if (temp->data == val) {
+                cout << "Value Found." << endl;
+                return;
+            }
+            if (val < temp->data)
+                temp = temp->lchild;
+            else
+                temp = temp->rchild;
+        }
+        cout << "Value Not Found" << endl;
+    }
+
+    // Swaps left and right children at every node (mirror the tree)
+    void swap(Node* parent) {
+        if (parent == nullptr)
+            return;
+
+        // Swap left and right
+        Node* temp2 = parent->lchild;
+        parent->lchild = parent->rchild;
+        parent->rchild = temp2;
+
+        // Recurse for children
+        swap(parent->rchild);
+        swap(parent->lchild);
+    }
+};
+
+// Main function to interact with the BST
+int main() {
+    BinarySearchTree bst;
+    int ch = 0;
+    int val;
+
+    do {
+        cout << "\n1. Insert Data." << endl;
+        cout << "2. Longest Path." << endl;
+        cout << "3. Get Minimum" << endl;
+        cout << "4. Swap Nodes." << endl;
+        cout << "5. Search a Value." << endl;
+        cout << "6. Display Data." << endl;
+        cout << "0. Exit." << endl;
+        cout << "Enter Your Choice : ";
+        cin >> ch;
+
+        switch (ch) {
+        case 1:
+            cout << "Enter Value : ";
+            cin >> val;
+            bst.insert(val);
+            break;
+
+        case 2:
+            cout << "Number of nodes in Longest Path = "
+                 << bst.getLongestPath(bst.getRootNode()) << endl;
+            break;
+
+        case 3:
+            cout << "Minimum Value in tree = " << bst.getmin() << endl;
+            break;
+
+        case 4:
+            bst.swap(bst.getRootNode());
+            cout << "Nodes Swapped." << endl;
+            break;
+
+        case 5:
+            cout << "Enter value to search : ";
+            cin >> val;
+            bst.search(val);
+            break;
+
+        case 6:
+            bst.inorder();
+            break;
+
+        case 0:
+            exit(0);
+
+        default:
+            cout << "Invalid Choice.";
+        }
+    } while (ch != 0);
+
+    return 0;
+}
+```
+
+---
+
+### ✅ **Viva Questions with Answers:**
+
+**Q1. What is the time complexity of insert operation in BST?**
+**A:** Average case: O(log n), Worst case (unbalanced): O(n)
+
+**Q2. What does `getLongestPath()` compute?**
+**A:** It calculates the height of the tree (i.e., number of nodes in the longest path from root to leaf).
+
+**Q3. How does `getmin()` work?**
+**A:** It goes to the leftmost node (smallest value) since in BST, all left children are smaller.
+
+**Q4. What happens in `swap()`?**
+**A:** It mirrors the entire tree by swapping left and right child nodes recursively.
+
+**Q5. Why is inorder traversal used to display BST?**
+**A:** It prints BST values in sorted (ascending) order.
+
+**Q6. How is searching done in BST?**
+**A:** Using binary search logic: if value is less, go left; if greater, go right.
+
+---
+
+Would you like a flowchart or diagram for BST operations to include in your viva preparation?

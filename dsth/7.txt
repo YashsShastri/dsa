@@ -1,0 +1,191 @@
+Here's an explanation of the code along with the comments:
+
+```cpp
+#include <iostream>
+#include <iomanip>
+#include <string.h>
+#include <set>
+#define SIZE 6
+
+using namespace std;
+
+// Graph class which represents a graph using an adjacency matrix
+class Graph
+{
+    private:
+        string cities[SIZE];        // Array of cities (size defined as 6)
+        int adj_mat[SIZE][SIZE];    // Adjacency matrix to store edge weights (costs)
+    
+    public:
+        Graph(){}
+
+        // Function implementing Prim's algorithm to find the Minimum Spanning Tree (MST)
+        void prims_shortest_path(int index)
+        {
+            if(index > SIZE)    // Boundary check for invalid input
+                return;
+
+            int count = 1, total_min = 0;  // Initialize count and total_min (minimum path cost)
+            int min, src_vertex, dest_vertex;
+            bool visited[SIZE];              // Array to mark visited cities
+            set<int> vec_visited = set<int>();  // Set to store visited cities (used to avoid duplicates)
+            memset(visited, false, sizeof(visited));  // Initialize all cities as unvisited
+            
+            // Inserting the first city to start the algorithm
+            vec_visited.insert(index);
+            visited[index] = true;
+            
+            // Looping to find the MST and its edges
+            while(count < SIZE)
+            {
+                min = 999;   // Set an initial high value for the minimum edge
+                // Loop over all visited cities
+                for(int i : vec_visited)
+                {
+                    // Loop over all cities to find the smallest edge
+                    for(int j = 0; j < SIZE; ++j)
+                    {
+                        if(i == j || visited[j]) continue;  // Skip if it's the same city or already visited
+                        // Check for the minimum edge weight between two unvisited cities
+                        if(adj_mat[i][j] < min)
+                        {
+                            min = adj_mat[i][j];
+                            src_vertex = i;
+                            dest_vertex = j;
+                        }
+                    }
+                }
+                total_min += min;    // Add the edge weight to the total minimum cost
+                visited[dest_vertex] = true;  // Mark the destination city as visited
+                vec_visited.insert(dest_vertex);  // Add destination city to the visited set
+                cout << "Going From " << cities[src_vertex] << " - " << cities[dest_vertex] << endl;  // Output the edge chosen
+                count++;     
+            }
+            cout << "Shortest_path = " << total_min << endl;   // Output the total cost of the MST
+        } 
+
+        // Function to input the routes and connectivity between cities
+        void get_routes()
+        {
+            // Get city names from the user
+            for(int i = 0; i < SIZE; ++i)
+            {
+                cout << "Enter city-" << i + 1 << " : ";
+                cin >> cities[i];
+            }
+            
+            cout << "\nIf no connectivity then Cost = '0'." << endl;
+            // Get the edge weights (costs) between cities
+            for(int i = 0; i < SIZE; i++)
+            {
+                for(int j = i + 1; j < SIZE; j++)
+                {
+                    cout << cities[i] << "->" << cities[j] << " : ";
+                    cin >> adj_mat[i][j];
+                    if(adj_mat[i][j] == 0) adj_mat[i][j] = adj_mat[j][i] = adj_mat[i][i] = 999;   // No path between cities, set cost to 999 (infinity)
+                    else adj_mat[j][i] = adj_mat[i][j];  // Ensure the graph is undirected
+                }
+            }
+        }
+
+        // Function to show the adjacency matrix as a chart
+        void show_chart()
+        {
+            cout << "\n--------------------------------------------------------\n";
+            cout << setw(10) << "|";
+            // Display city names in the header
+            for(int i = 0; i < SIZE; ++i)
+                cout << setw(cities[i].length() + 2) << cities[i] << "|";
+            cout << "\n--------------------------------------------------------";
+            // Display the adjacency matrix (cities vs. connectivity costs)
+            for(int i = 0; i < SIZE; ++i)
+            {
+                cout << "\n" << setw(9) << cities[i] << "|";
+                for(int j = 0; j < SIZE; ++j)
+                    cout << setw(cities[j].length() + 2) << adj_mat[i][j] << "|";
+            }
+            cout << endl;
+        }
+};
+
+// Main function
+int main()
+{
+    Graph G1;
+    G1.get_routes();    // Get the routes (cities and connectivity)
+    G1.show_chart();    // Display the adjacency matrix chart
+    G1.prims_shortest_path(0);   // Apply Prim's algorithm starting from city 0
+    cout << endl;
+    return 0;
+}
+
+/*
+Sample Input:
+
+Enter city-1 : Miami
+Enter city-2 : Seattle
+Enter city-3 : Buffalo
+Enter city-4 : Manhattan
+Enter city-5 : NewYork
+Enter city-6 : Washington
+
+If no connectivity then Cost = '0'.
+Miami->Seattle : 12
+Miami->Buffalo : 8
+Miami->Manhattan : 0
+Miami->NewYork : 0
+Miami->Washington : 0
+Seattle->Buffalo : 9
+Seattle->Manhattan : 0
+Seattle->NewYork : 22
+Seattle->Washington : 11
+Buffalo->Manhattan : 0
+Buffalo->NewYork : 16
+Buffalo->Washington : 14
+Manhattan->NewYork : 15
+Manhattan->Washington : 3
+NewYork->Washington : 18
+
+Sample Output:
+
+--------------------------------------------------------
+         |  Miami|  Seattle|  Buffalo|  Manhattan|  NewYork|  Washington|
+--------------------------------------------------------
+    Miami|    999|       12|        8|        999|      999|         999|
+  Seattle|     12|      999|        9|        999|       22|          11|
+  Buffalo|      8|        9|      999|        999|       16|          14|
+Manhattan|    999|      999|      999|        999|       15|           3|
+  NewYork|    999|       22|       16|         15|      999|          18|
+Washington|    999|       11|       14|          3|       18|        999|
+
+Going From Miami - Buffalo
+Going From Buffalo - Seattle
+Going From Seattle - Washington
+Going From Washington - Manhattan
+Going From Manhattan - NewYork
+Shortest_path = 46
+*/
+
+```
+
+### Explanation:
+
+1. **Graph Initialization:**
+
+   * The graph is represented by an adjacency matrix (`adj_mat`) where the element `adj_mat[i][j]` represents the cost (distance) between city `i` and city `j`. If there's no direct route, the cost is set to a high value (999).
+
+2. **Prim’s Algorithm:**
+
+   * It finds the Minimum Spanning Tree (MST) starting from a specified city (index). The algorithm selects the smallest edge from the set of visited cities and adds it to the MST, ensuring no cycles are formed.
+   * The loop continues until all cities are included in the MST. It uses a `set<int>` to store the visited cities and `visited[]` array to track the cities that have been processed.
+
+3. **Input and Output:**
+
+   * The cities are inputted by the user, and the graph is populated by the user-entered costs.
+   * The adjacency matrix is displayed to show the costs between cities.
+   * The program then runs Prim's algorithm and prints the cities visited in the order they were added to the MST, as well as the total cost.
+
+### Key Concepts:
+
+* **Adjacency Matrix:** Used to represent the graph and store the costs of edges between cities.
+* **Prim's Algorithm:** Used to find the Minimum Spanning Tree (MST) of a graph by continuously adding the minimum weight edge to the tree, ensuring no cycles are formed.
