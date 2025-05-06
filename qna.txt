@@ -1,0 +1,819 @@
+Below, I have created 20 viva voce questions with detailed answers for each of the 12 coding problem statements provided, tailored for second-year computer engineering students at SPPU (Savitribai Phule Pune University) following the 2019 pattern. These questions are in-depth, focusing on data structures and algorithms, and are based on the problem statements analyzed from the query. The codes are assumed to be available at GitHub.com/YashsShastri/dsa. This results in a total of 240 questions with comprehensive answers.
+
+---
+
+## Group A
+
+### Problem 1: Telephone Book Database Using Hash Table
+**Problem Statement**: Implement a hash table to quickly look up clients' telephone numbers in a database of N clients.
+
+#### Questions and Answers
+
+1. **What is a hash table, and how does it facilitate quick lookups in a telephone book database?**  
+   **Answer**: A hash table is a data structure that maps keys to values using a hash function, which computes an index into an array. For a telephone book, the key (e.g., client name) is hashed to an index where the value (telephone number) is stored, enabling average-case O(1) lookup time due to direct index access.
+
+2. **What is the purpose of a hash function in this implementation?**  
+   **Answer**: The hash function converts a key (client name) into an array index. It ensures uniform distribution of keys across the table to minimize collisions, making lookups efficient.
+
+3. **What are collisions, and how do they occur in this context?**  
+   **Answer**: Collisions occur when two different client names hash to the same index. In a telephone book, this might happen if names like "John" and "Jonah" produce the same hash value due to the hash function's limitations.
+
+4. **How would you handle collisions in this hash table implementation?**  
+   **Answer**: Collisions can be handled using chaining (storing a linked list of entries at each index) or open addressing (using probing to find an empty slot). Chaining is often preferred for simplicity and flexibility.
+
+5. **Why is a hash table suitable for quick telephone number lookups?**  
+   **Answer**: It offers average O(1) time complexity for lookups, ideal for real-time retrieval of telephone numbers compared to linear search (O(n)) in arrays or lists.
+
+6. **What is the time complexity of inserting a new client into the hash table?**  
+   **Answer**: Average time complexity is O(1), as it involves hashing the key and adding the entry. Worst case is O(n) if many collisions occur, lengthening the chain.
+
+7. **How do you resize a hash table if it becomes full?**  
+   **Answer**: Double the table size, create a new array, and rehash all existing entries into it using the hash function, then deallocate the old array.
+
+8. **What is the load factor, and how does it affect performance?**  
+   **Answer**: The load factor is the ratio of entries to table size (n/m). A higher load factor increases collisions, degrading performance from O(1) to potentially O(n).
+
+9. **What is the difference between chaining and open addressing?**  
+   **Answer**: Chaining uses linked lists at each index to store colliding entries, while open addressing resolves collisions within the table using probing (e.g., linear or quadratic).
+
+10. **What is linear probing, and what is a potential issue with it?**  
+    **Answer**: Linear probing checks the next slot sequentially upon collision. It can lead to primary clustering, where consecutive slots fill up, increasing search time.
+
+11. **How does quadratic probing differ from linear probing?**  
+    **Answer**: Quadratic probing uses a quadratic function (e.g., i²) to determine the next slot, reducing clustering by spacing probes more variably than linear probing’s fixed steps.
+
+12. **How would you design a hash function for client names?**  
+    **Answer**: Multiply ASCII values of characters by powers of a prime (e.g., 31), sum them, and take modulo table size to ensure uniform distribution.
+
+13. **Why might you choose a prime number as the hash table size?**  
+    **Answer**: A prime size reduces clustering by minimizing common factors with hash values, leading to better key distribution.
+
+14. **How would you implement this hash table in C++?**  
+    **Answer**: Use a `vector<list<pair<string, string>>>` where each list holds name-number pairs at hashed indices, with a hash function like `hash<string>`.
+
+15. **How do you delete a client from the hash table with open addressing?**  
+    **Answer**: Mark the slot as "deleted" rather than empty to maintain search chains, allowing subsequent lookups to continue past it.
+
+16. **What advantages does a hash table have over a binary search tree for this problem?**  
+    **Answer**: Hash tables provide faster average-case lookups (O(1) vs. O(log n)) and simpler implementation, though they don’t maintain order like BSTs.
+
+17. **When might a hash table be less suitable than other structures?**  
+    **Answer**: If ordered retrieval (e.g., alphabetical listing) or range queries are needed, a BST or sorted array would be better, as hash tables lack order.
+
+18. **How does performance change as the load factor increases?**  
+    **Answer**: Higher load factors increase collisions, lengthening chains or probe sequences, shifting operation times closer to O(n).
+
+19. **What is rehashing, and when is it necessary?**  
+    **Answer**: Rehashing resizes the table and redistributes entries when the load factor exceeds a threshold (e.g., 0.7), maintaining efficiency.
+
+20. **How does a hash table differ from a dictionary conceptually?**  
+    **Answer**: A hash table is a specific implementation of a dictionary ADT, which is an abstract concept for key-value storage. Dictionaries can also use BSTs or arrays.
+
+---
+
+### Problem 2: Dictionary ADT Using Hashing with Chaining
+**Problem Statement**: Implement a dictionary ADT using hashing with collision handling via chaining, supporting insert, find, and delete operations on key-value pairs.
+
+#### Questions and Answers
+
+1. **What is a dictionary ADT, and what are its core operations?**  
+   **Answer**: A dictionary ADT stores key-value pairs with unique, comparable keys, supporting insert(key, value), find(key), and delete(key). It abstracts key-value mapping.
+
+2. **How does hashing enable dictionary operations?**  
+   **Answer**: Hashing maps keys to indices in an array, allowing O(1) average-case time for insert, find, and delete by direct access, assuming minimal collisions.
+
+3. **What is chaining, and why is it used here?**  
+   **Answer**: Chaining resolves collisions by storing a linked list of key-value pairs at each index, chosen for its simplicity and ability to handle many entries.
+
+4. **What are the benefits of chaining over open addressing?**  
+   **Answer**: Chaining avoids clustering, supports unlimited entries per slot, and is easier to implement than probing methods like linear or quadratic probing.
+
+5. **How do you insert a key-value pair with chaining?**  
+   **Answer**: Hash the key to find the index, then append the pair to the list at that index, updating the value if the key exists (with replacement).
+
+6. **How is deletion implemented in this hash table?**  
+   **Answer**: Hash the key, search the list at that index, and remove the node containing the key if found, adjusting the list pointers.
+
+7. **What is the time complexity of the find operation?**  
+   **Answer**: Average O(1 + α), where α (load factor) is n/m. Worst case is O(n) if all keys hash to one slot.
+
+8. **How does the hash function impact dictionary performance?**  
+   **Answer**: A uniform hash function minimizes collisions, keeping list lengths short and operations near O(1). Poor distribution degrades performance.
+
+9. **What does "with/without replacement" mean in this context?**  
+   **Answer**: "With replacement" updates the value for an existing key; "without replacement" might disallow duplicates or append new entries, though chaining typically allows multiple entries.
+
+10. **How would you implement this in C++?**  
+    **Answer**: Use `vector<list<pair<KeyType, ValueType>>>`, where each list stores pairs, and a hash function maps keys to indices.
+
+11. **How are collisions handled when multiple keys hash to the same slot?**  
+    **Answer**: All colliding pairs are stored in the list at that slot, and operations search the list linearly.
+
+12. **What happens if the table has too many slots and few entries?**  
+    **Answer**: A low load factor (e.g., < 0.1) wastes space but reduces collisions, keeping operations fast.
+
+13. **What if there are few slots and many entries?**  
+    **Answer**: A high load factor increases chain lengths, degrading performance to O(n) due to linear searches in long lists.
+
+14. **How do you resize this hash table dynamically?**  
+    **Answer**: Double the size, rehash all entries into a new table, and replace the old one when the load factor exceeds a threshold (e.g., 0.7).
+
+15. **What is the space complexity of this implementation?**  
+    **Answer**: O(m + n), where m is the number of slots and n is the number of entries, accounting for the array and linked lists.
+
+16. **How does this compare to a BST-based dictionary?**  
+    **Answer**: Hashing offers O(1) average-case vs. BST’s O(log n), but BSTs provide ordered traversal, which hash tables lack.
+
+17. **What are some practical uses of this dictionary?**  
+    **Answer**: Symbol tables in compilers, caching systems, or databases where fast key-based access is critical.
+
+18. **Why must the hash function be deterministic?**  
+    **Answer**: It ensures the same key always maps to the same index, maintaining consistency for find and delete operations.
+
+19. **What is a universal hash function, and how might it help?**  
+    **Answer**: A family of hash functions chosen randomly to minimize worst-case collision patterns, improving average performance against adversarial inputs.
+
+20. **If keys aren’t comparable, how does this affect the implementation?**  
+    **Answer**: Hashing only requires keys to be hashable, not comparable. Comparability is needed for BSTs, not this hash-based approach.
+
+---
+
+## Group B
+
+### Problem 3: Tree Representation of a Book
+**Problem Statement**: Construct a tree representing a book with chapters, sections, and subsections, print nodes, and analyze time and space complexity.
+
+#### Questions and Answers
+
+1. **What is a tree data structure, and how does it model a book?**  
+   **Answer**: A tree is a hierarchical structure with nodes and edges. Here, the book is the root, chapters are its children, sections are children of chapters, and subsections are their children.
+
+2. **How would you represent this hierarchy in a tree?**  
+   **Answer**: Use a multi-way tree where each node has a name (e.g., "Chapter 1") and a list of child pointers to its sub-nodes (sections, subsections).
+
+3. **What distinguishes a binary tree from a multi-way tree?**  
+   **Answer**: A binary tree limits nodes to two children, while a multi-way tree allows multiple children, suitable for variable numbers of sections/subsections.
+
+4. **How would you implement a tree node in C++?**  
+   **Answer**: `struct Node { string name; vector<Node*> children; };`, where `children` holds pointers to sub-nodes.
+
+5. **What is the time complexity to add a subsection?**  
+   **Answer**: O(1) if you have a pointer to the parent section, as it’s a simple append to the children vector.
+
+6. **How do you print all nodes in the tree?**  
+   **Answer**: Use a pre-order traversal (root, then children recursively) to list book, chapters, sections, and subsections in order.
+
+7. **What is the space complexity of this tree?**  
+   **Answer**: O(n), where n is the total number of nodes (book + chapters + sections + subsections).
+
+8. **What is the difference between DFS and BFS traversals?**  
+   **Answer**: DFS (depth-first) explores deep into one branch before backtracking; BFS (breadth-first) explores all nodes at one level before moving deeper.
+
+9. **How do you calculate the tree’s depth?**  
+   **Answer**: Recursively compute height = 1 + max(height of children), starting from the root.
+
+10. **What is the time complexity to find the depth?**  
+    **Answer**: O(n), as all nodes may need to be visited in a skewed tree.
+
+11. **How do you count the number of subsections (leaves)?**  
+    **Answer**: Traverse the tree, counting nodes with no children.
+
+12. **What defines a leaf node in this context?**  
+    **Answer**: A node with no children, typically a subsection here.
+
+13. **Can this be converted to a binary tree? How?**  
+    **Answer**: Yes, using the first-child/next-sibling method: each node’s first child is its left child, and its next sibling is its right child.
+
+14. **Why use a tree for this problem?**  
+    **Answer**: Trees naturally represent hierarchies, making it intuitive to model and navigate book structure.
+
+15. **How do you search for a subsection by name?**  
+    **Answer**: Use DFS or BFS, checking each node’s name until a match is found.
+
+16. **What is the time complexity for searching?**  
+    **Answer**: O(n), as all nodes might be visited in the worst case.
+
+17. **Could an ordered tree improve search efficiency?**  
+    **Answer**: If sorted (e.g., by name), a BST-like structure could reduce search to O(log n), but this tree isn’t inherently ordered.
+
+18. **How do you delete a section and its subsections?**  
+    **Answer**: Locate the section, recursively delete its children, then remove it from its parent’s children list.
+
+19. **What is the time complexity for deleting a subtree?**  
+    **Answer**: O(m), where m is the number of nodes in the subtree being deleted.
+
+20. **How does a tree compare to nested arrays for this problem?**  
+    **Answer**: Trees offer dynamic growth and easier hierarchical manipulation, while nested arrays are static and harder to modify at deeper levels.
+
+---
+
+### Problem 4: Binary Search Tree Operations
+**Problem Statement**: Construct a BST, perform insertion, find longest path nodes, minimum value, mirror the tree, and search.
+
+#### Questions and Answers
+
+1. **What is a Binary Search Tree (BST)?**  
+   **Answer**: A BST is a binary tree where each node’s left subtree has values less than the node, and the right subtree has greater values.
+
+2. **How do you insert a node into a BST?**  
+   **Answer**: Traverse from the root, going left if the value is less, right if greater, and insert at the first null position.
+
+3. **What is the time complexity of BST insertion?**  
+   **Answer**: Average O(log n) for a balanced tree, worst O(n) if skewed.
+
+4. **How do you find the number of nodes in the longest path?**  
+   **Answer**: Compute the height (edges) recursively, then add 1 for nodes: height = 1 + max(left height, right height).
+
+5. **What is the time complexity to find the longest path?**  
+   **Answer**: O(n), as all nodes may be visited.
+
+6. **How do you find the minimum value in a BST?**  
+   **Answer**: Traverse to the leftmost node, which holds the smallest value.
+
+7. **What is the time complexity for finding the minimum?**  
+   **Answer**: O(h), where h is the height: O(log n) average, O(n) worst.
+
+8. **How do you mirror a BST?**  
+   **Answer**: Recursively swap the left and right child pointers of each node.
+
+9. **What is the time complexity for mirroring?**  
+   **Answer**: O(n), as every node is visited once.
+
+10. **How do you search for a value in a BST?**  
+    **Answer**: Compare the target with the current node, recurse left if smaller, right if larger, until found or null.
+
+11. **What is the search time complexity?**  
+    **Answer**: O(log n) average, O(n) worst case if unbalanced.
+
+12. **Why is a BST efficient for searching?**  
+    **Answer**: It halves the search space at each step, like binary search, assuming balance.
+
+13. **What happens if values are inserted in sorted order?**  
+    **Answer**: The BST becomes a skewed tree (like a linked list), with O(n) complexity for operations.
+
+14. **How can you prevent a BST from becoming skewed?**  
+    **Answer**: Use self-balancing variants like AVL or Red-Black trees.
+
+15. **What is an AVL tree compared to a BST?**  
+    **Answer**: An AVL tree is a BST that self-balances by ensuring subtree height differences are at most 1, using rotations.
+
+16. **Is the longest path the same as the height?**  
+    **Answer**: No, height is the number of edges (h), while nodes in the longest path is h + 1.
+
+17. **How would you implement mirroring in C++?**  
+    **Answer**: `void mirror(Node* root) { if (root) { swap(root->left, root->right); mirror(root->left); mirror(root->right); } }`.
+
+18. **What’s a practical use of mirroring a BST?**  
+    **Answer**: It’s mostly academic, testing understanding of tree structure, but could invert order for specific traversals.
+
+19. **How does a BST differ from a heap?**  
+    **Answer**: BST maintains key order (left < node < right), while a heap prioritizes extremal values (e.g., max at root) with no strict order between subtrees.
+
+20. **How do you delete a node from a BST?**  
+    **Answer**: Handle three cases: no children (remove), one child (replace with child), two children (replace with inorder successor and delete successor).
+
+---
+
+### Problem 5: Dictionary Using BST
+**Problem Statement**: Implement a dictionary with BST, supporting add, delete, update, display in order, and find max comparisons.
+
+#### Questions and Answers
+
+1. **How does a BST-based dictionary compare to a hash-based one?**  
+   **Answer**: BST offers O(log n) operations with ordered traversal, while hashing provides O(1) average lookups but no order.
+
+2. **What operations does this dictionary support?**  
+   **Answer**: Add (insert), delete, update (modify value), display sorted, and find max comparisons for a keyword.
+
+3. **How do you add a new keyword to the BST?**  
+   **Answer**: Insert as in a standard BST, placing the key-value pair based on key comparisons.
+
+4. **How are duplicate keys handled?**  
+   **Answer**: Update the value if the key exists, as dictionaries typically require unique keys.
+
+5. **What is the search time complexity in this BST?**  
+   **Answer**: O(log n) average, O(n) worst if unbalanced.
+
+6. **How do you delete a keyword?**  
+   **Answer**: Find the node, then remove it based on its children: no child, one child, or two children (using inorder successor).
+
+7. **What is the deletion time complexity?**  
+   **Answer**: O(log n) average, O(n) worst case.
+
+8. **How do you display the dictionary in ascending order?**  
+   **Answer**: Perform an inorder traversal (left, root, right), which lists keys in sorted order.
+
+9. **What is the time complexity for display?**  
+   **Answer**: O(n), as all nodes are visited.
+
+10. **How do you update a keyword’s value?**  
+    **Answer**: Search for the key, then replace its value if found.
+
+11. **What determines the maximum comparisons for finding a keyword?**  
+    **Answer**: The tree’s height; worst case is h + 1 comparisons from root to deepest leaf.
+
+12. **How can you keep the BST efficient?**  
+    **Answer**: Use self-balancing trees (e.g., AVL) to ensure O(log n) height.
+
+13. **What differentiates a BST from an AVL tree?**  
+    **Answer**: AVL trees maintain balance (height difference ≤ 1) via rotations, unlike standard BSTs.
+
+14. **How do you compute max comparisons practically?**  
+    **Answer**: Find the tree’s height (h) recursively, then max comparisons is h + 1.
+
+15. **What is an inorder successor, and why is it useful?**  
+    **Answer**: The smallest key greater than a node’s key, used in deletion with two children to maintain BST properties.
+
+16. **How do you find the inorder successor?**  
+    **Answer**: If right child exists, it’s the leftmost node in the right subtree; otherwise, it’s an ancestor reached by going up.
+
+17. **Why use a BST over a sorted array here?**  
+    **Answer**: BST allows O(log n) insertions/deletions vs. O(n) for arrays, with dynamic resizing.
+
+18. **What’s a disadvantage compared to hashing?**  
+    **Answer**: Slower lookups (O(log n) vs. O(1)) and potential imbalance without self-balancing.
+
+19. **How do you display in descending order?**  
+    **Answer**: Use reverse inorder traversal (right, root, left).
+
+20. **Can lookups be optimized further?**  
+    **Answer**: Balancing (e.g., AVL) is primary; caching frequent keys could help but adds complexity.
+
+---
+
+## Group C
+
+### Problem 6: Flight Paths as a Graph
+**Problem Statement**: Represent flight paths between cities as a graph, check connectivity, and justify storage.
+
+#### Questions and Answers
+
+1. **What is a graph, and how does it represent flight paths?**  
+   **Answer**: A graph has vertices (cities) and edges (flights). Edge weights can represent time or fuel cost.
+
+2. **What are the two main graph representations?**  
+   **Answer**: Adjacency matrix (2D array) and adjacency list (array of neighbor lists).
+
+3. **Which representation suits this problem, and why?**  
+   **Answer**: Adjacency list, as flight networks are sparse (few direct flights per city), saving space over a matrix.
+
+4. **What are the pros and cons of an adjacency matrix?**  
+   **Answer**: Pros: O(1) edge lookup. Cons: O(V²) space, inefficient for sparse graphs.
+
+5. **What about an adjacency list?**  
+   **Answer**: Pros: O(V + E) space, good for sparse graphs. Cons: O(degree) edge lookup.
+
+6. **How do you check if the graph is connected?**  
+   **Answer**: Use DFS or BFS from one vertex; if all vertices are visited, it’s connected.
+
+7. **What is the time complexity for connectivity check?**  
+   **Answer**: O(V + E) for both DFS and BFS.
+
+8. **What do edge weights represent here?**  
+   **Answer**: Time to fly or fuel used between cities.
+
+9. **How are weights stored in an adjacency list?**  
+   **Answer**: As pairs (neighbor, weight) in each vertex’s list.
+
+10. **Is this graph directed or undirected?**  
+    **Answer**: Undirected if flights are bidirectional; directed if one-way flights exist.
+
+11. **How do you handle multiple flights between cities?**  
+    **Answer**: Use a multigraph or store multiple edges with different weights in the list.
+
+12. **What is a multigraph?**  
+    **Answer**: A graph allowing multiple edges between the same vertex pair.
+
+13. **How do you implement a multigraph with an adjacency list?**  
+    **Answer**: Each list entry can be a vector of (neighbor, weight) pairs for that vertex.
+
+14. **What is the space complexity of an adjacency list?**  
+    **Answer**: O(V + E) for directed; O(V + 2E) for undirected (each edge listed twice).
+
+15. **How does BFS work on this graph?**  
+    **Answer**: Use a queue: enqueue a starting vertex, mark visited, dequeue, and enqueue unvisited neighbors.
+
+16. **Why check connectivity in this context?**  
+    **Answer**: Ensures every city is reachable from every other via some flight path.
+
+17. **What if the graph isn’t connected?**  
+    **Answer**: Some cities are unreachable, indicating isolated flight networks.
+
+18. **How do you find the shortest flight path?**  
+    **Answer**: Use Dijkstra’s algorithm for non-negative weights, finding the least-time or least-fuel path.
+
+19. **What is Dijkstra’s time complexity?**  
+    **Answer**: O((V + E) log V) with a binary heap.
+
+20. **Why choose an adjacency list over a matrix here?**  
+    **Answer**: Sparse flight networks make lists more space-efficient (O(V + E) vs. O(V²)), with comparable operation times for traversal.
+
+---
+
+### Problem 7: Minimum Cost Connection for Offices
+**Problem Statement**: Connect offices with phone lines at minimum cost using appropriate data structures (likely MST).
+
+#### Questions and Answers
+
+1. **What is a spanning tree?**  
+   **Answer**: A subgraph of an undirected graph that’s a tree and includes all vertices.
+
+2. **What is a Minimum Spanning Tree (MST)?**  
+   **Answer**: A spanning tree with the minimum total edge weight.
+
+3. **Which algorithms find an MST?**  
+   **Answer**: Kruskal’s and Prim’s algorithms.
+
+4. **How does Kruskal’s algorithm work?**  
+   **Answer**: Sort edges by weight, add the smallest edges avoiding cycles until all vertices are connected.
+
+5. **How does Prim’s algorithm work?**  
+   **Answer**: Start at a vertex, greedily add the smallest edge to an unconnected vertex until all are included.
+
+6. **What data structure does Prim’s use for efficiency?**  
+   **Answer**: A min-heap priority queue to select the smallest edge.
+
+7. **What is Kruskal’s time complexity?**  
+   **Answer**: O(E log E) due to edge sorting.
+
+8. **What is Prim’s time complexity with a heap?**  
+   **Answer**: O((V + E) log V).
+
+9. **What do vertices and edges represent here?**  
+   **Answer**: Vertices are offices; edges are phone lines with weights as connection costs.
+
+10. **Why is an MST suitable?**  
+    **Answer**: It connects all offices at minimum cost without cycles, meeting the problem’s goal.
+
+11. **How does Kruskal’s detect cycles?**  
+    **Answer**: Uses Union-Find to track connected components.
+
+12. **What is Union-Find?**  
+    **Answer**: A data structure for disjoint sets, supporting union (merge) and find (component check) operations.
+
+13. **What is Union-Find’s time complexity?**  
+    **Answer**: Nearly O(1) amortized (O(α(n))) with path compression and rank.
+
+14. **Can Prim’s handle disconnected graphs?**  
+    **Answer**: No, it assumes connectivity; it finds an MST for one component only.
+
+15. **What if the graph isn’t connected here?**  
+    **Answer**: An MST can’t connect all offices, indicating insufficient lines; report or handle components separately.
+
+16. **How does a spanning tree differ from a general tree?**  
+    **Answer**: A spanning tree is a specific tree covering all graph vertices; a general tree has no such requirement.
+
+17. **Can a graph have multiple MSTs?**  
+    **Answer**: Yes, if multiple trees have the same minimum weight, often with equal-weight edges.
+
+18. **How would you implement Kruskal’s in C++?**  
+    **Answer**: Use `vector<tuple<int, int, int>>` for edges (weight, u, v), sort, and apply Union-Find.
+
+19. **What is the space complexity for this problem?**  
+    **Answer**: O(V + E) for an adjacency list or edge list.
+
+20. **Do negative weights affect MST algorithms?**  
+    **Answer**: No, Kruskal’s and Prim’s work with any weights, as they seek minimum total weight, assuming no negative cycles.
+
+---
+
+## Group D
+
+### Problem 8: Optimal Binary Search Tree (OBST)
+**Problem Statement**: Build an OBST from sorted keys with search probabilities to minimize search cost.
+
+#### Questions and Answers
+
+1. **What is an Optimal Binary Search Tree (OBST)?**  
+   **Answer**: A BST minimizing expected search cost based on key access probabilities.
+
+2. **How does an OBST differ from a regular BST?**  
+   **Answer**: OBST optimizes for search frequencies, not just insertion order, potentially skewing structure.
+
+3. **What is the expected search cost?**  
+   **Answer**: Sum of each key’s probability times its depth plus 1 in the tree.
+
+4. **How is the cost of a BST calculated?**  
+   **Answer**: Cost = Σ (pi * (depth(ki) + 1)) over all keys ki with probabilities pi.
+
+5. **What’s the dynamic programming approach for OBST?**  
+   **Answer**: Use a DP table cost[i][j] for subtrees from key i to j, minimizing cost by trying each key as root.
+
+6. **What is the time complexity of the DP solution?**  
+   **Answer**: O(n³) due to three nested loops over n keys.
+
+7. **What role do probabilities pi play?**  
+   **Answer**: They weight each key’s contribution to the total search cost, guiding the tree’s structure.
+
+8. **Are the keys assumed sorted in this problem?**  
+   **Answer**: Yes, k1 < k2 < … < kn, allowing BST properties to hold.
+
+9. **How does OBST differ from a balanced BST?**  
+   **Answer**: OBST optimizes for specific probabilities, not height; a balanced BST evenly distributes nodes.
+
+10. **How do zero-probability keys affect the OBST?**  
+    **Answer**: They’re included but don’t impact cost, placed to optimize other keys.
+
+11. **What is the space complexity of the DP table?**  
+    **Answer**: O(n²) for the n x n cost table.
+
+12. **How do you build the OBST after DP?**  
+    **Answer**: Use a root table from DP to recursively construct the tree, assigning roots and subtrees.
+
+13. **Can OBST be built faster than O(n³)?**  
+    **Answer**: Yes, Knuth’s optimization reduces it to O(n²) using the quadrangle inequality.
+
+14. **What is Knuth’s optimization?**  
+    **Answer**: Limits root choices between the optimal roots of subproblems, speeding up DP.
+
+15. **How does OBST compare to a Huffman tree?**  
+    **Answer**: OBST minimizes search cost for internal nodes; Huffman minimizes coding cost for leaves.
+
+16. **Can OBST handle range queries?**  
+    **Answer**: Yes, as a BST, it supports O(log n) range queries if balanced.
+
+17. **What if all probabilities are equal?**  
+    **Answer**: The OBST resembles a balanced BST, minimizing height uniformly.
+
+18. **How do insertions affect an OBST?**  
+    **Answer**: OBST is static; dynamic updates require rebuilding, unlike AVL trees.
+
+19. **What’s the average search time in an OBST?**  
+    **Answer**: Optimized to be minimal for given probabilities, typically better than a random BST.
+
+20. **Where is OBST useful?**  
+    **Answer**: In databases or search systems with known, uneven access patterns.
+
+---
+
+### Problem 9: Dictionary Using Height-Balanced Tree
+**Problem Statement**: Implement a dictionary with a height-balanced tree (e.g., AVL), supporting add, delete, update, display, and analyze complexity.
+
+#### Questions and Answers
+
+1. **What is a height-balanced tree?**  
+   **Answer**: A BST where the height difference between left and right subtrees is at most 1, ensuring O(log n) operations.
+
+2. **What is an AVL tree?**  
+   **Answer**: A self-balancing BST maintaining height balance through rotations after insertions/deletions.
+
+3. **How does an AVL tree maintain balance?**  
+   **Answer**: It checks balance factors post-operation and applies rotations (left, right, left-right, right-left) if needed.
+
+4. **What are the rotation types in AVL trees?**  
+   **Answer**: Single left, single right, left-right (left then right), right-left (right then left).
+
+5. **What is the insertion time complexity in an AVL tree?**  
+   **Answer**: O(log n), including rebalancing via rotations.
+
+6. **Why are AVL tree operations efficient?**  
+   **Answer**: Height is kept O(log n), ensuring logarithmic time for search, insert, and delete.
+
+7. **What is the balance factor?**  
+   **Answer**: Height of left subtree minus height of right subtree, ideally -1, 0, or 1.
+
+8. **When do you perform a rotation?**  
+   **Answer**: When a node’s balance factor becomes > 1 or < -1 after an operation.
+
+9. **What is a single left rotation?**  
+   **Answer**: Used when a node has balance 2 and right child ≥ 0; the right child becomes the new root.
+
+10. **How does AVL differ from a Red-Black tree?**  
+    **Answer**: AVL is stricter (height diff ≤ 1), offering faster lookups; Red-Black is looser, with fewer rotations.
+
+11. **How do you implement dictionary operations in AVL?**  
+    **Answer**: Insert, delete, search, and update as in BST, with rebalancing after modifications.
+
+12. **What is the search complexity in an AVL tree?**  
+    **Answer**: O(log n), guaranteed by balanced height.
+
+13. **How do you display sorted data?**  
+    **Answer**: Inorder traversal for ascending, reverse inorder for descending.
+
+14. **What is the space complexity of an AVL tree?**  
+    **Answer**: O(n), storing key, value, pointers, and height per node.
+
+15. **How are duplicates handled?**  
+    **Answer**: Typically updated, as dictionary keys are unique; otherwise, disallowed.
+
+16. **What’s the max height of an AVL tree?**  
+    **Answer**: ~1.44 log(n), ensuring O(log n) operations.
+
+17. **How does deletion work in an AVL tree?**  
+    **Answer**: Remove as in BST, then rebalance from the deleted node up to the root.
+
+18. **Why use AVL over a standard BST?**  
+    **Answer**: Guarantees O(log n) operations vs. potential O(n) in unbalanced BSTs.
+
+19. **When might AVL not be ideal?**  
+    **Answer**: For disk storage or frequent insertions, B-trees or Red-Black trees may outperform due to fewer rotations.
+
+20. **How does AVL’s keyword search complexity compare to hashing?**  
+    **Answer**: O(log n) vs. O(1) average, but AVL supports order-based operations hashing can’t.
+
+---
+
+## Group E
+
+### Problem 10: Heap for Max and Min Marks
+**Problem Statement**: Use a heap to find maximum and minimum marks from student scores.
+
+#### Questions and Answers
+
+1. **What is a heap data structure?**  
+   **Answer**: A complete binary tree where parents are greater (max-heap) or less (min-heap) than children.
+
+2. **How can heaps find max and min marks?**  
+   **Answer**: Max-heap gives the maximum at the root; min-heap gives the minimum.
+
+3. **What is the time complexity to build a heap?**  
+   **Answer**: O(n) using bottom-up heapification.
+
+4. **What’s the complexity to find the max in a max-heap?**  
+   **Answer**: O(1), as it’s the root.
+
+5. **What about the min in a min-heap?**  
+   **Answer**: O(1), also at the root.
+
+6. **How do you insert into a heap?**  
+   **Answer**: Add at the end, bubble up by swapping with the parent if the heap property is violated.
+
+7. **What is insertion time complexity?**  
+   **Answer**: O(log n) due to bubbling up.
+
+8. **How do you delete the max from a max-heap?**  
+   **Answer**: Replace root with the last element, remove the last, and bubble down.
+
+9. **What is deletion time complexity?**  
+   **Answer**: O(log n) for bubbling down.
+
+10. **Can one heap find both max and min efficiently?**  
+    **Answer**: No, you’d need separate max- and min-heaps or a min-max heap.
+
+11. **What is a min-max heap?**  
+    **Answer**: A structure allowing O(log n) access to both min and max elements.
+
+12. **How would you solve this with two heaps?**  
+    **Answer**: Build a max-heap and a min-heap from all marks.
+
+13. **What’s the space complexity with two heaps?**  
+    **Answer**: O(n), as each stores all n marks.
+
+14. **Can you do it with less space?**  
+    **Answer**: Yes, track min/max during input in O(n) time, O(1) space, but heaps offer flexibility.
+
+15. **How does a heap relate to a priority queue?**  
+    **Answer**: A heap implements a priority queue, where the root is the highest/lowest priority.
+
+16. **How is a heap stored in memory?**  
+    **Answer**: As an array: left child at 2i+1, right at 2i+2 for node i.
+
+17. **Why are heaps good for extrema?**  
+    **Answer**: The heap property ensures O(1) access to max/min, with O(log n) updates.
+
+18. **What is heapification?**  
+    **Answer**: Converting an array to a heap by sifting elements down from bottom to top.
+
+19. **How does a binary heap differ from a binomial heap?**  
+    **Answer**: Binary heaps are single trees; binomial heaps are collections of binomial trees, better for merging.
+
+20. **Why use a heap here?**  
+    **Answer**: Efficiently finds max/min in O(1) after O(n) build, suitable for static data analysis.
+
+---
+
+## Group F
+
+### Problem 11: Sequential File for Student Information
+**Problem Statement**: Maintain student info (roll number, name, division, address) in a sequential file with add, delete, and display operations.
+
+#### Questions and Answers
+
+1. **What is a sequential file?**  
+   **Answer**: A file where records are stored and accessed in order, one after another.
+
+2. **How do you store student info in it?**  
+   **Answer**: Each record (roll number, name, division, address) is written sequentially, e.g., in a text or binary file.
+
+3. **What operations are supported?**  
+   **Answer**: Add (append), delete (remove/mark), display (search and show) a student’s info.
+
+4. **How do you add a student?**  
+   **Answer**: Append the record to the file’s end.
+
+5. **What’s the add time complexity?**  
+   **Answer**: O(1) for appending, assuming file system efficiency.
+
+6. **How do you delete a student?**  
+   **Answer**: Mark as deleted or rewrite the file excluding the record.
+
+7. **What’s the delete time complexity?**  
+   **Answer**: O(n) to find/mark or rewrite the file.
+
+8. **How do you display a student’s info?**  
+   **Answer**: Sequentially search by roll number and print the record.
+
+9. **What’s the display time complexity?**  
+   **Answer**: O(n), worst case scanning the whole file.
+
+10. **Why use a sequential file here?**  
+    **Answer**: Simplicity for small datasets or educational purposes, though inefficient for frequent updates.
+
+11. **What are its advantages?**  
+    **Answer**: Easy to implement, efficient for sequential access or batch processing.
+
+12. **What are its disadvantages?**  
+    **Answer**: Slow random access, insertions, and deletions due to linear structure.
+
+13. **What if a student isn’t found?**  
+    **Answer**: Display a "not found" message after searching.
+
+14. **How could you speed up searching?**  
+    **Answer**: Sort by roll number for binary search (O(log n)), but this complicates updates.
+
+15. **What’s the difference from a random access file?**  
+    **Answer**: Random access allows direct position jumps; sequential requires linear traversal.
+
+16. **How do you read/write in C++?**  
+    **Answer**: Use `ifstream` for reading, `ofstream` for writing, e.g., `file << roll << name`.
+
+17. **How do you ensure file closure?**  
+    **Answer**: Call `file.close()` or rely on destructor when the stream object is destroyed.
+
+18. **What if you delete a non-existent student?**  
+    **Answer**: Search first, then report "not found" if absent.
+
+19. **How do you implement display?**  
+    **Answer**: Read records, match roll number, and output details or "not found."
+
+20. **Can deletion be optimized?**  
+    **Answer**: Mark as deleted for O(n) time, compact later to remove marked records.
+
+---
+
+### Problem 12: Employee Information System
+**Problem Statement**: Maintain employee info (ID, name, designation, salary) in a sequential file with add, delete, and display operations.
+
+#### Questions and Answers
+
+1. **What data is stored per employee?**  
+   **Answer**: Employee ID, name, designation, salary.
+
+2. **How does this differ from Problem 11?**  
+   **Answer**: Same operations, different fields (employee vs. student data).
+
+3. **Would you use the same approach?**  
+   **Answer**: Yes, a sequential file with similar add/delete/display logic.
+
+4. **What’s the key field here?**  
+   **Answer**: Employee ID, assumed unique.
+
+5. **How do you ensure ID uniqueness?**  
+   **Answer**: Check the file for the ID before adding; reject if it exists.
+
+6. **What’s the time complexity to check uniqueness?**  
+   **Answer**: O(n), scanning the entire file.
+
+7. **How could you improve efficiency?**  
+   **Answer**: Use an indexed file or database, though this problem likely expects sequential simplicity.
+
+8. **What file format would you use?**  
+   **Answer**: Text for readability or binary for efficiency.
+
+9. **Text vs. binary file pros and cons?**  
+   **Answer**: Text: human-readable, larger size. Binary: compact, faster, less portable.
+
+10. **How do you add an employee?**  
+    **Answer**: Verify ID uniqueness, then append to the file.
+
+11. **How do you delete an employee?**  
+    **Answer**: Mark as deleted or rewrite without the record.
+
+12. **What if an employee isn’t found for display?**  
+    **Answer**: Show a "not found" message.
+
+13. **Can you optimize search?**  
+    **Answer**: Sort by ID for binary search, but updates become O(n).
+
+14. **What’s the impact of frequent add/delete?**  
+    **Answer**: File fragmentation with marked deletions; requires periodic compaction.
+
+15. **How do you implement display?**  
+    **Answer**: Search by ID, display details or "not found."
+
+16. **How do you list all employees?**  
+    **Answer**: Read and display all non-deleted records.
+
+17. **What about data backup?**  
+    **Answer**: Regularly copy the file to prevent loss; consider versioning.
+
+18. **How do you handle concurrent access?**  
+    **Answer**: Simple systems don’t; real systems need file locks or a database.
+
+19. **What’s the file pointer’s role?**  
+    **Answer**: Tracks the current read/write position in the file.
+
+20. **How do you move the file pointer in C++?**  
+    **Answer**: Use `seekg()` (input) or `seekp()` (output) with a position.
+
+---
